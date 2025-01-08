@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Gestión de Productos</h1>
+    </header>
+
+    <nav>
+        <a href="#productos">Productos</a>
+        <a href="#entradas">Entradas</a>
+        <a href="#salidas">Salidas</a>
+        <a href="#stock">Stock</a>
+    </nav>
+
+    <div class="container" id="productos">
+        <h1>Agregar Nuevo Producto</h1>
+        <form id="product-form">
+            <input type="text" id="codigo" placeholder="Código" required>
+            <input type="text" id="producto" placeholder="Producto" required>
+            <input type="text" id="marca" placeholder="Marca" required>
+            <input type="text" id="codificacion" placeholder="Codificación" required>
+            <select id="almacen" required>
+                <option value="">Seleccionar Almacén</option>
+                <option value="Almacén 1">Almacén 1</option>
+                <option value="Almacén 2">Almacén 2</option>
+            </select>
+            <button type="button" onclick="addProduct()">Agregar Producto</button>
+        </form>
+
+        <h1>Lista de Productos</h1>
+        <table id="product-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Almacén</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los productos se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="entradas" style="display:none;">
+        <h1>Registrar Entrada</h1>
+        <form id="entry-form">
+            <input type="text" id="entry-codigo" placeholder="Código" required>
+            <input type="text" id="entry-producto" placeholder="Producto" required>
+            <input type="text" id="entry-marca" placeholder="Marca" required>
+            <input type="text" id="entry-codificacion" placeholder="Codificación" required>
+            <input type="number" id="entry-cantidad" placeholder="Cantidad" required>
+            <input type="date" id="entry-fecha" required>
+            <input type="text" id="entry-doc" placeholder="Documento de Compra" required>
+            <input type="text" id="entry-obs" placeholder="Observación" required>
+            <input type="text" id="entry-proveedor" placeholder="Proveedor" required>
+            <button type="button" onclick="addEntry()">Registrar Entrada</button>
+        </form>
+
+        <h1>Historial de Entradas</h1>
+        <table id="entry-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Fecha</th>
+                    <th>Documento</th>
+                    <th>Observación</th>
+                    <th>Proveedor</th>
+
+                </tr>
+            </thead>
+            <select id="entry-producto" required>
+                <!-- Los productos se llenarán dinámicamente -->
+            </select>            
+        </table>
+    </div>
+
+    <div class="container" id="salidas" style="display:none;">
+        <h1>Registrar Salida</h1>
+        <form id="exit-form">
+            <input type="text" id="exit-codigo" placeholder="Código" required>
+            <input type="text" id="exit-producto" placeholder="Producto" required>
+            <input type="text" id="exit-marca" placeholder="Marca" required>
+            <input type="text" id="exit-codificacion" placeholder="Codificación" required>
+            <input type="number" id="exit-cantidad" placeholder="Cantidad" required>
+            <input type="text" id="exit-recibio" placeholder="Recibió" required>
+            <input type="text" id="exit-cliente" placeholder="Cliente" required>
+            <input type="text" id="exit-ot" placeholder="OT" required>
+            <input type="text" id="exit-pago" placeholder="Pago" required>
+            <button type="button" onclick="addExit()">Registrar Salida</button>
+        </form>
+
+        <h1>Historial de Salidas</h1>
+        <table id="exit-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Cantidad</th>
+                    <th>Recibió</th>
+                    <th>Cliente</th>
+                    <th>OT</th>
+                    <th>Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las salidas se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="stock" style="display:none;">
+        <h1>Stock de Productos</h1>
+        <table id="stock-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- El stock se calculará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

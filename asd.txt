@@ -1,0 +1,462 @@
+// Archivo: index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Gestión de Productos</h1>
+    </header>
+
+    <nav>
+        <a href="#productos">Productos</a>
+        <a href="#entradas">Entradas</a>
+        <a href="#salidas">Salidas</a>
+        <a href="#stock">Stock</a>
+    </nav>
+
+    <div class="container" id="productos">
+        <h1>Agregar Nuevo Producto</h1>
+        <form id="product-form">
+            <input type="text" id="codigo" placeholder="Código" required>
+            <input type="text" id="producto" placeholder="Producto" required>
+            <input type="text" id="marca" placeholder="Marca" required>
+            <input type="text" id="codificacion" placeholder="Codificación" required>
+            <select id="almacen" required>
+                <option value="">Seleccionar Almacén</option>
+                <option value="Almacén 1">Almacén 1</option>
+                <option value="Almacén 2">Almacén 2</option>
+            </select>
+            <button type="button" onclick="addProduct()">Agregar Producto</button>
+        </form>
+
+        <h1>Lista de Productos</h1>
+        <table id="product-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Almacén</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los productos se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="entradas" style="display:none;">
+        <h1>Registrar Entrada</h1>
+        <form id="entry-form">
+            <input type="text" id="entry-codigo" placeholder="Código" required>
+            <input type="text" id="entry-producto" placeholder="Producto" required>
+            <input type="text" id="entry-marca" placeholder="Marca" required>
+            <input type="text" id="entry-codificacion" placeholder="Codificación" required>
+            <input type="number" id="entry-cantidad" placeholder="Cantidad" required>
+            <input type="date" id="entry-fecha" required>
+            <input type="text" id="entry-doc" placeholder="Documento de Compra" required>
+            <input type="text" id="entry-obs" placeholder="Observación" required>
+            <input type="text" id="entry-proveedor" placeholder="Proveedor" required>
+            <button type="button" onclick="addEntry()">Registrar Entrada</button>
+        </form>
+
+        <h1>Historial de Entradas</h1>
+        <table id="entry-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Fecha</th>
+                    <th>Documento</th>
+                    <th>Observación</th>
+                    <th>Proveedor</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las entradas se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="salidas" style="display:none;">
+        <h1>Registrar Salida</h1>
+        <form id="exit-form">
+            <input type="text" id="exit-codigo" placeholder="Código" required>
+            <input type="text" id="exit-producto" placeholder="Producto" required>
+            <input type="text" id="exit-marca" placeholder="Marca" required>
+            <input type="text" id="exit-codificacion" placeholder="Codificación" required>
+            <input type="number" id="exit-cantidad" placeholder="Cantidad" required>
+            <input type="text" id="exit-recibio" placeholder="Recibió" required>
+            <input type="text" id="exit-cliente" placeholder="Cliente" required>
+            <input type="text" id="exit-ot" placeholder="OT" required>
+            <input type="text" id="exit-pago" placeholder="Pago" required>
+            <button type="button" onclick="addExit()">Registrar Salida</button>
+        </form>
+
+        <h1>Historial de Salidas</h1>
+        <table id="exit-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Codificación</th>
+                    <th>Cantidad</th>
+                    <th>Recibió</th>
+                    <th>Cliente</th>
+                    <th>OT</th>
+                    <th>Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las salidas se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="stock" style="display:none;">
+        <h1>Stock de Productos</h1>
+        <table id="stock-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- El stock se calculará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+/* Archivo: styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #ff6600;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #e65c00;
+    padding: 10px 0;
+}
+
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 30px;
+}
+
+form input, form select, form button {
+    padding: 10px;
+    margin: 10px 5px 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #e65c00;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #ff6600;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Archivo: scripts.js */
+function showSection(section) {
+    document.getElementById('productos').style.display = 'none';
+    document.getElementById('entradas').style.display = 'none';
+    document.getElementById('salidas').style.display = 'none';
+    document.getElementById('stock').style.display = 'none';
+
+    document.getElementById(section).style.display = 'block';
+}
+
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection(e.target.getAttribute('href').substring(1));
+    });
+});
+
+/*function addProduct() {
+    const codigo = document.getElementById('codigo').value;
+    const producto = document.getElementById('producto').value;
+    const marca = document.getElementById('marca').value;
+    const codificacion = document.getElementById('codificacion').value;
+    const almacen = document.getElementById('almacen').value;
+
+    if (codigo && producto && marca && codificacion && almacen) {
+        const table = document.getElementById('product-table').querySelector('tbody');
+        const newRow = table.insertRow();
+
+        newRow.innerHTML = `
+            <td>${codigo}</td>
+            <td>${producto}</td>
+            <td>${marca}</td>
+            <td>${codificacion}</td>
+            <td>${almacen}</td>
+        `;
+
+        document.getElementById('product-form').reset();
+    } else {
+        alert('Por favor, completa todos los campos.');
+    }
+}*/
+async function addProduct() {
+    const codigo = document.getElementById('codigo').value;
+    const producto = document.getElementById('producto').value;
+    const marca = document.getElementById('marca').value;
+    const codificacion = document.getElementById('codificacion').value;
+    const almacen = document.getElementById('almacen').value;
+
+    if (codigo && producto && marca && codificacion && almacen) {
+        try {
+            const response = await fetch('http://localhost:3306/addProduct', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo, producto, marca, codificacion, almacen })
+            });
+
+            if (response.ok) {
+                alert('Producto agregado exitosamente');
+                document.getElementById('product-form').reset();
+            } else {
+                alert('Error al agregar el producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    } else {
+        alert('Por favor, completa todos los campos.');
+    }
+}
+
+
+function addEntry() {
+    const codigo = document.getElementById('entry-codigo').value;
+    const producto = document.getElementById('entry-producto').value;
+    const marca = document.getElementById('entry-marca').value;
+    const codificacion = document.getElementById('entry-codificacion').value;
+    const cantidad = document.getElementById('entry-cantidad').value;
+    const fecha = document.getElementById('entry-fecha').value;
+    const doc = document.getElementById('entry-doc').value;
+    const obs = document.getElementById('entry-obs').value;
+    const proveedor = document.getElementById('entry-proveedor').value;
+
+    if (codigo && producto && cantidad && fecha && doc) {
+        const table = document.getElementById('entry-table').querySelector('tbody');
+        const newRow = table.insertRow();
+
+        newRow.innerHTML = `
+            <td>${codigo}</td>
+            <td>${producto}</td>
+            <td>${marca}</td>
+            <td>${codificacion}</td>
+            <td>${cantidad}</td>
+            <td>${fecha}</td>
+            <td>${doc}</td>
+            <td>${obs}</td>
+            <td>${proveedor}</td>
+        `;
+
+        document.getElementById('entry-form').reset();
+    } else {
+        alert('Por favor, completa todos los campos.');
+    }
+}
+
+function addExit() {
+    const codigo = document.getElementById('exit-codigo').value;
+    const producto = document.getElementById('exit-producto').value;
+    const marca = document.getElementById('exit-marca').value;
+    const codificacion = document.getElementById('exit-codificacion').value;
+    const cantidad = document.getElementById('exit-cantidad').value;
+    const recibio = document.getElementById('exit-recibio').value;
+    const cliente = document.getElementById('exit-cliente').value;
+    const ot = document.getElementById('exit-marca').value;
+    const pago = document.getElementById('exit-pago').value;
+
+    if (codigo && producto && cantidad && fecha && obs) {
+        const table = document.getElementById('exit-table').querySelector('tbody');
+        const newRow = table.insertRow();
+
+        newRow.innerHTML = `
+            <td>${codigo}</td>
+            <td>${producto}</td>
+            <td>${marca}</td>
+            <td>${codificacion}</td>
+            <td>${cantidad}</td>
+            <td>${recibio}</td>
+            <td>${cliente}</td>
+            <td>${ot}</td>
+            <td>${pago}</td>
+        `;
+
+        document.getElementById('exit-form').reset();
+    } else {
+        alert('Por favor, completa todos los campos.');
+    }
+}
+
+/* Archivo: server.js */
+const express = require('express');
+const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+// Configuración de la base de datos
+const db = mysql.createConnection({
+    host: 'bxofidfdypgw3uodu6cy-mysql.services.clever-cloud.com',
+    user: 'unfkim9wp47pp3qx',
+    password: '4wzwvUG3iJxyQE6iEeUm',
+    database: 'bxofidfdypgw3uodu6cy',
+    port:3306
+});
+
+db.connect(err => {
+    if (err) {
+        console.error('Error conectando a la base de datos:', err);
+        return;
+    }
+    console.log('Conectado a la base de datos MySQL');
+});
+
+// Endpoints
+app.post('/addProduct', (req, res) => {
+    const { codigo, producto, marca, codificacion, almacen } = req.body;
+    const query = 'INSERT INTO productos (codigo, producto, marca, codificacion, almacen) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [codigo, producto, marca, codificacion, almacen], (err, result) => {
+        if (err) return res.status(500).send(err);
+        
+        // Inicializa el stock del producto en 0
+        const id_producto = result.insertId;
+        const stockQuery = 'INSERT INTO stock (id_producto, stock) VALUES (?, ?)';
+        db.query(stockQuery, [id_producto, 0], (err, stockResult) => {
+            if (err) return res.status(500).send(err);
+            res.send('Producto agregado exitosamente con stock inicializado');
+        });
+    });
+});
+
+app.post('/addEntry', (req, res) => {
+    const { id_producto, cantidad, fecha, documento, observacion, proveedor } = req.body;
+    const query = 'INSERT INTO entradas (id_producto, cantidad, fecha, documento, observacion, proveedor) VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(query, [id_producto, cantidad, fecha, documento, observacion, proveedor], (err, result) => {
+        if (err) return res.status(500).send(err);
+        
+        // Actualiza el stock
+        const stockQuery = 'UPDATE stock SET stock = stock + ? WHERE id_producto = ?';
+        db.query(stockQuery, [cantidad, id_producto], (err, stockResult) => {
+            if (err) return res.status(500).send(err);
+            res.send('Entrada registrada y stock actualizado exitosamente');
+        });
+    });
+});
+
+app.post('/addExit', (req, res) => {
+    const { id_producto, cantidad, recibio, cliente, ot, pago } = req.body;
+    const query = 'INSERT INTO salidas (id_producto, cantidad, recibio, cliente, ot, pago) VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(query, [id_producto, cantidad, recibio, cliente, ot, pago], (err, result) => {
+        if (err) return res.status(500).send(err);
+        
+        // Reduce el stock
+        const stockQuery = 'UPDATE stock SET stock = stock - ? WHERE id_producto = ?';
+        db.query(stockQuery, [cantidad, id_producto], (err, stockResult) => {
+            if (err) return res.status(500).send(err);
+            res.send('Salida registrada y stock actualizado exitosamente');
+        });
+    });
+});
+
+app.get('/getStock', (req, res) => {
+    const query = `
+        SELECT p.codigo, p.producto, p.marca, s.stock
+        FROM stock s
+        INNER JOIN productos p ON s.id_producto = p.id_producto
+    `;
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Servidor corriendo en el puerto 3000');
+});
+
