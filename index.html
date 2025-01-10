@@ -54,7 +54,8 @@
         <h1>Registrar Entrada</h1>
         <form id="entry-form">
             <input type="text" id="entry-codigo" placeholder="Código" required>
-            <input type="text" id="entry-producto" placeholder="Producto" required>
+            <input type="text" id="entry-producto" placeholder="Producto" required oninput="mostrarSugerencias()">
+            <div id="sugerencias-producto" class="sugerencias"></div>
             <input type="text" id="entry-marca" placeholder="Marca" required>
             <input type="text" id="entry-codificacion" placeholder="Codificación" required>
             <input type="number" id="entry-cantidad" placeholder="Cantidad" required>
@@ -80,9 +81,9 @@
 
                 </tr>
             </thead>
-            <select id="entry-producto" required>
-                <!-- Los productos se llenarán dinámicamente -->
-            </select>            
+            <tbody>
+                <!-- Los productos se agregarán aquí dinámicamente -->
+            </tbody>          
         </table>
     </div>
 

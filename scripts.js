@@ -14,30 +14,7 @@ document.querySelectorAll('nav a').forEach(link => {
     });
 });
 
-/*function addProduct() {
-    const codigo = document.getElementById('codigo').value;
-    const producto = document.getElementById('producto').value;
-    const marca = document.getElementById('marca').value;
-    const codificacion = document.getElementById('codificacion').value;
-    const almacen = document.getElementById('almacen').value;
-
-    if (codigo && producto && marca && codificacion && almacen) {
-        const table = document.getElementById('product-table').querySelector('tbody');
-        const newRow = table.insertRow();
-
-        newRow.innerHTML = `
-            <td>${codigo}</td>
-            <td>${producto}</td>
-            <td>${marca}</td>
-            <td>${codificacion}</td>
-            <td>${almacen}</td>
-        `;
-
-        document.getElementById('product-form').reset();
-    } else {
-        alert('Por favor, completa todos los campos.');
-    }
-}*/
+/// agregar producto
 async function addProduct() {
     const codigo = document.getElementById('codigo').value;
     const producto = document.getElementById('producto').value;
@@ -47,7 +24,7 @@ async function addProduct() {
 
     if (codigo && producto && marca && codificacion && almacen) {
         try {
-            const response = await fetch('http://localhost:3306/addProduct', {
+            const response = await fetch('http://localhost:3000/addProduct', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ codigo, producto, marca, codificacion, almacen })
@@ -56,6 +33,7 @@ async function addProduct() {
             if (response.ok) {
                 alert('Producto agregado exitosamente');
                 document.getElementById('product-form').reset();
+                loadProducts(); // Recargar la lista de productos
             } else {
                 alert('Error al agregar el producto');
             }
@@ -67,71 +45,144 @@ async function addProduct() {
     }
 }
 
+// cargar los datos de producto
 async function loadProducts() {
     try {
-        const response = await fetch('http://localhost:3306/getProducts');
+        const response = await fetch('http://localhost:3000/getProducts');
         const products = await response.json();
 
-        const productSelect = document.getElementById('entry-producto');
-        productSelect.innerHTML = '<option value="">Seleccionar Producto</option>';
+        const tableBody = document.getElementById('product-table').querySelector('tbody');
+        tableBody.innerHTML = ''; // Limpiar tabla antes de agregar nuevos productos
 
         products.forEach(product => {
-            const option = document.createElement('option');
-            option.value = product.id_producto;
-            option.textContent = `${product.producto} (${product.codigo})`;
-            option.dataset.codigo = product.codigo;
-            option.dataset.marca = product.marca;
-            option.dataset.codificacion = product.codificacion;
-            productSelect.appendChild(option);
-        });
-
-        productSelect.addEventListener('change', () => {
-            const selectedOption = productSelect.options[productSelect.selectedIndex];
-            document.getElementById('entry-codigo').value = selectedOption.dataset.codigo || '';
-            document.getElementById('entry-marca').value = selectedOption.dataset.marca || '';
-            document.getElementById('entry-codificacion').value = selectedOption.dataset.codificacion || '';
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${product.codigo}</td>
+                <td>${product.producto}</td>
+                <td>${product.marca}</td>
+                <td>${product.codificacion}</td>
+                <td>${product.almacen}</td>
+            `;
         });
     } catch (error) {
         console.error('Error al cargar productos:', error);
     }
 }
 
-// Llamar a loadProducts al mostrar la sección de entradas
-document.querySelector('nav a[href="#entradas"]').addEventListener('click', loadProducts);
+// Cargar productos al iniciar la página
+document.addEventListener('DOMContentLoaded', loadProducts);
 
 
-function addEntry() {
-    const codigo = document.getElementById('entry-codigo').value;
-    const producto = document.getElementById('entry-producto').value;
-    const marca = document.getElementById('entry-marca').value;
-    const codificacion = document.getElementById('entry-codificacion').value;
-    const cantidad = document.getElementById('entry-cantidad').value;
-    const fecha = document.getElementById('entry-fecha').value;
-    const doc = document.getElementById('entry-doc').value;
-    const obs = document.getElementById('entry-obs').value;
-    const proveedor = document.getElementById('entry-proveedor').value;
+async function addEntry() {
+    const codigo = document.getElementById('codigo').value;
+    const producto = document.getElementById('producto').value;
+    const marca = document.getElementById('marca').value;
+    const codificacion = document.getElementById('codificacion').value;
+    const cantidad = document.getElementById('entry-cantidad').value.trim();
+    const fecha = document.getElementById('entry-fecha').value.trim();
+    const documento = document.getElementById('entry-doc').value.trim();
+    const observacion = document.getElementById('entry-obs').value.trim();
+    const proveedor = document.getElementById('entry-proveedor').value.trim();
 
-    if (codigo && producto && cantidad && fecha && doc) {
-        const table = document.getElementById('entry-table').querySelector('tbody');
-        const newRow = table.insertRow();
+    if (codigo & producto & marca & codificacion & cantidad & fecha & documento) {
+        alert('Por favor, completa todos los campos obligatorios.');
+        return;
+    }
 
-        newRow.innerHTML = `
-            <td>${codigo}</td>
-            <td>${producto}</td>
-            <td>${marca}</td>
-            <td>${codificacion}</td>
-            <td>${cantidad}</td>
-            <td>${fecha}</td>
-            <td>${doc}</td>
-            <td>${obs}</td>
-            <td>${proveedor}</td>
-        `;
+    try {
+        const response = await fetch('http://localhost:3000/addEntry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ codigo, producto, marca, codificacion, cantidad, fecha, documento, observacion, proveedor })
+        });
 
-        document.getElementById('entry-form').reset();
-    } else {
-        alert('Por favor, completa todos los campos.');
+        if (response.ok) {
+            alert('Entrada registrada exitosamente');
+            document.getElementById('entry-form').reset();
+        } else {
+            const errorMessage = await response.text();
+            alert('Error al registrar la entrada: ' + errorMessage);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error en la conexión con el servidor.');
     }
 }
+
+
+
+async function fetchProducts() {
+    try {
+        const response = await fetch('http://localhost:3000/getProducts');
+        productosLista = await response.json();
+    } catch (error) {
+        console.error('Error al cargar productos:', error);
+    }
+}
+
+// Función para filtrar y mostrar sugerencias
+function mostrarSugerencias() {
+    const input = document.getElementById('entry-producto');
+    const sugerenciasDiv = document.getElementById('sugerencias-producto');
+    const filtro = input.value.toLowerCase();
+
+    sugerenciasDiv.innerHTML = '';
+
+    if (!filtro) return;
+
+    const productosFiltrados = productosLista.filter(producto =>
+        producto.producto.toLowerCase().includes(filtro)
+    );
+
+    productosFiltrados.forEach(producto => {
+        const div = document.createElement('div');
+        div.textContent = `${producto.producto} (${producto.marca})`;
+        div.onclick = () => seleccionarProducto(producto);
+        sugerenciasDiv.appendChild(div);
+    });
+}
+
+// Función para seleccionar un producto de la lista
+function seleccionarProducto(producto) {
+    document.getElementById('entry-codigo').value = producto.codigo;
+    document.getElementById('entry-producto').value = producto.producto;
+    document.getElementById('entry-marca').value = producto.marca;
+    document.getElementById('entry-codificacion').value = producto.codificacion;
+
+    document.getElementById('sugerencias-producto').innerHTML = '';
+}
+
+// Cargar productos al iniciar la página
+document.addEventListener('DOMContentLoaded', fetchProducts);
+
+async function loadEntries() {
+    try {
+        const response = await fetch('http://localhost:3000/getEntradas');
+        const entries = await response.json();
+
+        const tableBody = document.getElementById('entry-table').querySelector('tbody');
+        tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas entradas
+
+        entries.forEach(entry => {
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${entry.codigo}</td>
+                <td>${entry.producto}</td>
+                <td>${entry.marca}</td>
+                <td>${entry.codificacion}</td>
+                <td>${entry.fecha}</td>
+                <td>${entry.documento}</td>
+                <td>${entry.observacion || ''}</td>
+                <td>${entry.proveedor || ''}</td>
+            `;
+        });
+    } catch (error) {
+        console.error('Error al cargar entradas:', error);
+    }
+}
+
+// Cargar entradas al iniciar la página
+document.addEventListener('DOMContentLoaded', loadEntries);
 
 function addExit() {
     const codigo = document.getElementById('exit-codigo').value;

@@ -42,16 +42,50 @@ app.post('/addProduct', (req, res) => {
 });
 
 app.post('/addEntry', (req, res) => {
-    const { id_producto, cantidad, fecha, documento, observacion, proveedor } = req.body;
-    const query = 'INSERT INTO entradas (id_producto, cantidad, fecha, documento, observacion, proveedor) VALUES (?, ?, ?, ?, ?, ?)';
-    db.query(query, [id_producto, cantidad, fecha, documento, observacion, proveedor], (err, result) => {
-        if (err) return res.status(500).send(err);
-        
-        // Actualiza el stock
-        const stockQuery = 'UPDATE stock SET stock = stock + ? WHERE id_producto = ?';
-        db.query(stockQuery, [cantidad, id_producto], (err, stockResult) => {
-            if (err) return res.status(500).send(err);
-            res.send('Entrada registrada y stock actualizado exitosamente');
+    const { codigo, producto, marca, codificacion, cantidad, fecha, documento, observacion, proveedor } = req.body;
+
+    // Verificar si el producto existe en la tabla de productos
+    const getProductQuery = `
+        SELECT id_producto 
+        FROM productos 
+        WHERE codigo = ? AND producto = ? AND marca = ? AND codificacion = ?
+    `;
+
+    db.query(getProductQuery, [codigo, producto, marca, codificacion], (err, results) => {
+        if (err) {
+            console.error('Error buscando el producto:', err);
+            return res.status(500).send('Error en la base de datos');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Producto no encontrado');
+        }
+
+        const id_producto = results[0].id_producto;
+
+        // Insertar en la tabla de entradas
+        const insertEntryQuery = `
+            INSERT INTO entradas (id_producto, cantidad, fecha, documento, observacion, proveedor) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+
+        db.query(insertEntryQuery, [id_producto, cantidad, fecha, documento, observacion, proveedor], (err, result) => {
+            if (err) {
+                console.error('Error insertando en entradas:', err);
+                return res.status(500).send('Error al registrar la entrada');
+            }
+
+            // Actualizar el stock del producto
+            const updateStockQuery = 'UPDATE stock SET stock = stock + ? WHERE id_producto = ?';
+
+            db.query(updateStockQuery, [cantidad, id_producto], (err, stockResult) => {
+                if (err) {
+                    console.error('Error actualizando stock:', err);
+                    return res.status(500).send('Error al actualizar el stock');
+                }
+
+                res.send('Entrada registrada y stock actualizado exitosamente');
+            });
         });
     });
 });
@@ -79,6 +113,13 @@ app.get('/getProducts', (req, res) => {
     });
 });
 
+app.get('/getEntradas', (req, res) => {
+    const query = 'SELECT id_entrada, id_producto, cantidad, producto, marca, codificacion, fecha, documento, observacion,proveedor FROM entradas';
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
 
 app.get('/getStock', (req, res) => {
     const query = `
